@@ -17,6 +17,7 @@ import com.genioussolutions.joaomoura.bookstoreflagproject.interfaces.AdapterCal
 import com.genioussolutions.joaomoura.bookstoreflagproject.interfaces.GetBookService;
 import com.genioussolutions.joaomoura.bookstoreflagproject.model.Item;
 import com.genioussolutions.joaomoura.bookstoreflagproject.model.Result;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -72,10 +73,9 @@ GetBookCallBack getBookCallBack;
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
                 Log.v("RETROFIT","OK");
-                /*if(response.isSuccessful()){
-                    bookAdapter = new BookAdapter(response.body())
-                    bookRecyclerView.setAdapter(bookAdapter);
-                }*/
+
+                bookAdapter = new BookAdapter(response.body().getItems(), getActivity(), BookListFragment.this);
+                bookRecyclerView.setAdapter(bookAdapter);
             }
 
             @Override
@@ -84,6 +84,8 @@ GetBookCallBack getBookCallBack;
                 Log.v("RETROFIT",t.getMessage());
             }
         });
+
+
     }
     public interface GetBookCallBack{
         void getBook (String id);

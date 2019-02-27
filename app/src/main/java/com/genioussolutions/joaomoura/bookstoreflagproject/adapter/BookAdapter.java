@@ -19,13 +19,11 @@ import java.util.List;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookAdapterViewHolder>  {
     private List<Item> items;
-
-    private List<Result> results;
     private Context context;
     private AdapterCallBack adapterCallBack;
 
-    public BookAdapter(List<Result> results, Context context, AdapterCallBack adapterCallBack) {
-        this.results = results;
+    public BookAdapter(List<Item> items, Context context, AdapterCallBack adapterCallBack) {
+        this.items = items;
         this.context = context;
         this.adapterCallBack = adapterCallBack;
     }
@@ -55,7 +53,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookAdapterVie
 
     @Override
     public int getItemCount() {
-        return results.size() ;
+        return items.size() ;
     }
 
 

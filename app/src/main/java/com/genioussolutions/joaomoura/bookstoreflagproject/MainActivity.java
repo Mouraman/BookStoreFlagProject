@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.genioussolutions.joaomoura.bookstoreflagproject.adapter.BookAdapter;
 import com.genioussolutions.joaomoura.bookstoreflagproject.fragments.BookListFragment;
+import com.genioussolutions.joaomoura.bookstoreflagproject.fragments.DetailFragment;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.GetBookCallBack {
 
@@ -27,6 +28,20 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     public void getBook(String id) {
+        DetailFragment detailFragment = new DetailFragment();
+
+        Bundle args= new Bundle();
+        args.putString("id",id);
+
+        detailFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.replace(R.id.container,detailFragment,"DETAIL");
+        fragmentTransaction.addToBackStack("list");
+        fragmentTransaction.commit();
+
 
     }
 }
