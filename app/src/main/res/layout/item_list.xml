@@ -34,6 +34,12 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Published date" />
+            <ImageButton
+                android:src="@mipmap/ic_launcher"
+                android:id="@+id/imgbtn_favoritos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
+
     </LinearLayout>
 </android.support.v7.widget.CardView>

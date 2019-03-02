@@ -1,14 +1,18 @@
 package com.genioussolutions.joaomoura.bookstoreflagproject.fragments;
 
 
+import android.content.Context;
 import android.media.Image;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.genioussolutions.joaomoura.bookstoreflagproject.R;
@@ -16,6 +20,7 @@ import com.genioussolutions.joaomoura.bookstoreflagproject.interfaces.GetBookSer
 import com.genioussolutions.joaomoura.bookstoreflagproject.model.Item;
 import com.genioussolutions.joaomoura.bookstoreflagproject.model.Result;
 import com.genioussolutions.joaomoura.bookstoreflagproject.model.VolumeInfo;
+import com.genioussolutions.joaomoura.bookstoreflagproject.preferences.SharedPreference;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -36,6 +41,10 @@ public class DetailFragment extends Fragment {
     private TextView tvStoreLink;
     private TextView tvPublishedDateDetail;
     private TextView tvDescription;
+    private FloatingActionButton fabFavoritos;
+    private ScrollView scrollViewDescription;
+    private SharedPreference sharedPreference;
+    private Context context;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -47,25 +56,47 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
-
+        scrollViewDescription = (ScrollView) view.findViewById(R.id.sv_description);
+        fabFavoritos = (FloatingActionButton) view.findViewById(R.id.fab_favoritos);
         ivDetail = (ImageView) view.findViewById(R.id.iv_detail);
         tvNomeDetail = (TextView) view.findViewById(R.id.tv_nome_detail);
         tvStoreLink = (TextView) view.findViewById(R.id.tv_storeLink);
         tvPublishedDateDetail = (TextView) view.findViewById(R.id.tv_storeLink);
         tvDescription = (TextView) view.findViewById(R.id.tv_publishedDateDetail);
 
-        Bundle args= this.getArguments();
+        Bundle args = this.getArguments();
 
         getBookDetail(args.getString("id"));
+
+        fabFavoritos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SharedPreference sharedPreference = new SharedPreference();
+                sharedPreference.addFavorite(context,   );
+
+            }
+        });
+
+
+        if (checkFavoriteItem()) {
+            fabFavoritos.setImageResource(R.drawable.heart_red);
+            fabFavoritos.setTag("red");
+        } else {
+            fabFavoritos.setImageResource(R.drawable.heart_grey);
+            fabFavoritos.setTag("grey");
+        }
         return view;
     }
-    private void prepareView(Item item){
+
+    private void prepareView(Item item) {
         Picasso.get().load(item.getVolumeInfo().getImageLinks().getThumbnail()).into(ivDetail);
         tvNomeDetail.setText(item.getVolumeInfo().getTitle());
         tvStoreLink.setText(item.getVolumeInfo().getCanonicalVolumeLink());
         tvPublishedDateDetail.setText(item.getVolumeInfo().getPublishedDate());
         tvDescription.setText(item.getVolumeInfo().getDescription());
     }
+
     private void getBookDetail(String id) {
 
         Retrofit retrofit = new Retrofit.
@@ -80,17 +111,26 @@ public class DetailFragment extends Fragment {
         bookDetail.enqueue(new Callback<Item>() {
             @Override
             public void onResponse(Call<Item> call, Response<Item> response) {
-                Log.v("RETROFIT","OK");
+                Log.v("RETROFIT", "OK");
 
                 prepareView(response.body());
             }
 
             @Override
             public void onFailure(Call<Item> call, Throwable t) {
-                Log.v("RETROFIT","NOK");
-                Log.v("RETROFIT",t.getMessage());
+                Log.v("RETROFIT", "NOK");
+                Log.v("RETROFIT", t.getMessage());
             }
         });
+    }
+
+    public boolean checkFavoriteItem(Item item) {
+        boolean check = false;
+        List<Item> favorites = sharedPreference.getFavorites(context);
+        if (favorites != null) {
+            check = true;
+        }
+        return check;
     }
 
 }

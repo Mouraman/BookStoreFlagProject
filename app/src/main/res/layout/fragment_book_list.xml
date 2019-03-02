@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".fragments.BookListFragment">
+<EditText
+    android:id="@+id/et_procuraLivros"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="text"
+    android:drawableRight="@drawable/ic_launcher_foreground"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler"
