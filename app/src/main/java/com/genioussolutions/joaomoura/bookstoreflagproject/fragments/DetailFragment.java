@@ -2,7 +2,6 @@ package com.genioussolutions.joaomoura.bookstoreflagproject.fragments;
 
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.design.widget.FloatingActionButton;
@@ -10,21 +9,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.genioussolutions.joaomoura.bookstoreflagproject.R;
 import com.genioussolutions.joaomoura.bookstoreflagproject.interfaces.GetBookService;
+import com.genioussolutions.joaomoura.bookstoreflagproject.model.Favorito;
 import com.genioussolutions.joaomoura.bookstoreflagproject.model.Item;
-import com.genioussolutions.joaomoura.bookstoreflagproject.model.Result;
-import com.genioussolutions.joaomoura.bookstoreflagproject.model.VolumeInfo;
 import com.genioussolutions.joaomoura.bookstoreflagproject.preferences.SharedPreference;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,10 +39,11 @@ public class DetailFragment extends Fragment {
     private TextView tvStoreLink;
     private TextView tvPublishedDateDetail;
     private TextView tvDescription;
-    private FloatingActionButton fabFavoritos;
+    private Switch swtFavoritos;
     private ScrollView scrollViewDescription;
     private SharedPreference sharedPreference;
     private Context context;
+    private boolean switchState;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -57,7 +56,7 @@ public class DetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
         scrollViewDescription = (ScrollView) view.findViewById(R.id.sv_description);
-        fabFavoritos = (FloatingActionButton) view.findViewById(R.id.fab_favoritos);
+        swtFavoritos = (Switch) view.findViewById(R.id.swt_favoritos);
         ivDetail = (ImageView) view.findViewById(R.id.iv_detail);
         tvNomeDetail = (TextView) view.findViewById(R.id.tv_nome_detail);
         tvStoreLink = (TextView) view.findViewById(R.id.tv_storeLink);
@@ -65,29 +64,25 @@ public class DetailFragment extends Fragment {
         tvDescription = (TextView) view.findViewById(R.id.tv_publishedDateDetail);
 
         Bundle args = this.getArguments();
+        Realm.init(context);
+        switchState= swtFavoritos.isChecked();
 
         getBookDetail(args.getString("id"));
 
-        fabFavoritos.setOnClickListener(new View.OnClickListener() {
+        swtFavoritos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-
-                SharedPreference sharedPreference = new SharedPreference();
-                sharedPreference.addFavorite(context,   );
-
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                addToFavorites();
             }
         });
 
 
-        if (checkFavoriteItem()) {
-            fabFavoritos.setImageResource(R.drawable.heart_red);
-            fabFavoritos.setTag("red");
-        } else {
-            fabFavoritos.setImageResource(R.drawable.heart_grey);
-            fabFavoritos.setTag("grey");
-        }
         return view;
     }
+
+    private void addToFavorites(Favorito favorito) {
+        favorito.setFavorite(true);
+        }
 
     private void prepareView(Item item) {
         Picasso.get().load(item.getVolumeInfo().getImageLinks().getThumbnail()).into(ivDetail);
@@ -124,13 +119,5 @@ public class DetailFragment extends Fragment {
         });
     }
 
-    public boolean checkFavoriteItem(Item item) {
-        boolean check = false;
-        List<Item> favorites = sharedPreference.getFavorites(context);
-        if (favorites != null) {
-            check = true;
-        }
-        return check;
-    }
 
 }
