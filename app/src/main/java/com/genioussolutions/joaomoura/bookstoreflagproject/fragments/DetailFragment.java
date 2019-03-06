@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.design.widget.FloatingActionButton;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,15 +65,16 @@ public class DetailFragment extends Fragment {
         tvDescription = (TextView) view.findViewById(R.id.tv_publishedDateDetail);
 
         Bundle args = this.getArguments();
-        Realm.init(context);
-        switchState= swtFavoritos.isChecked();
+       // Realm.init(context);
+        // switchState= swtFavoritos.isChecked();
 
         getBookDetail(args.getString("id"));
-
+tvStoreLink.setMovementMethod(LinkMovementMethod.getInstance());
         swtFavoritos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                addToFavorites();
+
+
             }
         });
 
@@ -87,7 +89,7 @@ public class DetailFragment extends Fragment {
     private void prepareView(Item item) {
         Picasso.get().load(item.getVolumeInfo().getImageLinks().getThumbnail()).into(ivDetail);
         tvNomeDetail.setText(item.getVolumeInfo().getTitle());
-        tvStoreLink.setText(item.getVolumeInfo().getCanonicalVolumeLink());
+        tvStoreLink.setText(item.getVolumeInfo().getPreviewLink());
         tvPublishedDateDetail.setText(item.getVolumeInfo().getPublishedDate());
         tvDescription.setText(item.getVolumeInfo().getDescription());
     }
