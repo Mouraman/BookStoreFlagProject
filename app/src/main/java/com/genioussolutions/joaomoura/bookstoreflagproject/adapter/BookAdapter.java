@@ -3,6 +3,7 @@ package com.genioussolutions.joaomoura.bookstoreflagproject.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +46,10 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookAdapterVie
     public void onBindViewHolder(@NonNull BookAdapterViewHolder bookAdapterViewHolder, final int i) {
         final Item item = items.get(i);
 
-        bookAdapterViewHolder.tvNome.setText(item.getClass().getName());
+        bookAdapterViewHolder.tvNome.setText(item.getVolumeInfo().getTitle());
         bookAdapterViewHolder.tvPublishedDate.setText(item.getVolumeInfo().getPublishedDate());
         if (item.getVolumeInfo().getImageLinks() == null) {
+            Log.v("Picasso","PlaceHolder");
             Picasso.get()
                     .load("https://ksr-ugc.imgix.net/assets/019/391/281/d236a09ffe246ae261318c9eb98099a5_original.png?ixlib=rb-1.1.0&w=680&fit=max&v=1511745527&auto=format&gif-q=50&lossless=true&s=7a88acc7c1e049e402cb388ddae8eefd")
                     .placeholder(R.drawable.ic_launcher_background)
@@ -55,6 +57,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookAdapterVie
                     .into(bookAdapterViewHolder.ivBookSmall);
         } else {
             Picasso.get().load(item.getVolumeInfo().getImageLinks().getSmallThumbnail()).into(bookAdapterViewHolder.ivBookSmall);
+            Log.v("Picasso","Imagem Do livro");
         }
         bookAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,14 +86,12 @@ return items.size();
         private TextView tvNome;
         private TextView tvPublishedDate;
         private ImageView ivBookSmall;
-        private ImageButton imgbtnFavoritos;
 
         public BookAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             tvNome = (TextView) itemView.findViewById(R.id.tv_nome);
             tvPublishedDate = (TextView) itemView.findViewById(R.id.tv_publishedDate);
             ivBookSmall = (ImageView) itemView.findViewById(R.id.iv_bookSmall);
-            imgbtnFavoritos = (ImageButton) itemView.findViewById(R.id.imgbtn_favoritos);
         }
     }
 
